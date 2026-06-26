@@ -1,0 +1,52 @@
+{
+  "company_name": "Scopic",
+  "products": [
+    "Custom Software Development",
+    "AI Development",
+    "Cloud Solutions",
+    "Web Development",
+    "UI/UX Services",
+    "Digital Marketing Solutions"
+  ],
+  "target_market": [
+    "Healthcare",
+    "Finance",
+    "Trading",
+    "Manufacturing",
+    "Entertainment",
+    "Cannabis",
+    "Fitness",
+    "Education"
+  ],
+  "tech_stack": [
+    "AI",
+    "Cloud",
+    "Web",
+    "Mobile",
+    "Desktop"
+  ],
+  "summary": "Scopic is a global software development company that crafts secure, AI-enabled solutions to fuel business growth. With 20 years of experience, they have delivered over 1,500 projects across 90+ countries, serving various industries with custom software development, digital marketing, and emerging technologies."
+}{
+  "company_name": "East Agile",
+  "products": [
+    "AI driven development",
+    "eXtreme Programming",
+    "Scalable Analytics",
+    "Lean Product Management",
+    "East Agile Tracker"
+  ],
+  "target_market": [
+    "Startups",
+    "Enterprise companies"
+  ],
+  "tech_stack": [
+    "GenAI",
+    "Python",
+    "Pivotal Tracker",
+    "Test Driven Development",
+    "Behavior Driven Development",
+    "eXtreme Programming (XP)",
+    "Polars"
+  ],
+  "summary": "East Agile is a GenAI driven development consultancy that provides AI driven development, eXtreme Programming, Scalable Analytics, and Lean Product Management services to startups and enterprise companies. They have worked with over 121 clients in the last 22 years, delivering highly reliable products and raising $1.5 billion in venture capital globally."
+}

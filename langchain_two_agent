@@ -1,0 +1,75 @@
+from langchain_groq import ChatGroq
+from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import PromptTemplate
+from ai_businness_agent import revenue_by_country, revenue_by_country_name, revenue_by_segment
+from langchain_core.tools import tool
+from langchain.agents import create_agent
+
+# 1. Wrap imported functions as tools
+revenue_by_country = tool(revenue_by_country)
+revenue_by_country_name = tool(revenue_by_country_name)
+revenue_by_segment = tool(revenue_by_segment)
+
+tools = [revenue_by_country, revenue_by_country_name, revenue_by_segment]
+load_dotenv()  # Load environment variables from .env file
+
+llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+
+planner_prompt = PromptTemplate(
+    template="""break down the goal into a list of concise steps.
+    the response is only contain steps for the Executor knows exactly what they need to do with given tools.
+    given we have 3 supported tools: revenue_by_country, revenue_by_country_name, revenue_by_segment
+    Break down the command: {input}
+    """,
+    input_variables=["input"]
+)
+planner_chain = planner_prompt | llm | StrOutputParser()
+
+agent = create_agent(
+  model=llm,
+  tools=tools,
+  system_prompt="""You are a helpful business data analyst. 
+  Return your answer in a clear and concise manner, 
+  the answer should be in a structured format, valid JSON with keys.
+  The response is only in JSON format without wrapping in.""",
+)
+
+while True:
+  sentence = input("what is your question? (Enter 'quit' to exit) ")
+  if sentence == "quit":
+      break
+  planner = planner_chain.invoke({"input": sentence})
+  responses = []
+  steps = [line.strip() for line in planner.strip().split('\n') if line.strip()]
+  print(steps) 
+  for step in steps:
+    print(f"\n=== Executing: {step} ===")
+    result = agent.invoke({"messages": [("human", step)]})
+    answer = result["messages"][-1].content
+    responses.append(answer)
+    print(answer)
+    
+  summary = agent.invoke({"messages": [("human", f'summary based on the results: {responses}')]})
+  print("\n=== FINAL SUMMARY ===")
+  print(summary["messages"][-1].content)
+  
+  
+# === REFLECTION ===
+# How did Planner + Executor improve on a single agent?
+# - Planner broke a vague goal into specific tool-mappable steps
+# - Executor focused on one step at a time without needing the full picture
+# - Final summary agent combined all results coherently
+
+# What was the hardest part?
+# - Parsing planner output into a clean list of steps
+# - Passing previous results as context to the summary step
+
+# What would break this system?
+# - If Planner creates a step with no matching tool
+# - If user goal is too vague for Planner to decompose
+
+# Real world use case:
+# - Planner = product manager breaking down a request
+# - Executor = engineer running specific tasks
+# - Summary = report generated automatically

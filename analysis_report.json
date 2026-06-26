@@ -1,0 +1,34 @@
+[
+  {
+    "url": "https://www.apollographql.com/blog/using-graphql-with-ruby-on-rails",
+    "title": "Using GraphQL with Ruby on Rails",
+    "main_claim": "Learn how to create a new project with Ruby on Rails and GraphQL while setting it up to use React and Apollo.",
+    "credibility_score": 8,
+    "summary": "* The article discusses how to use GraphQL with Ruby on Rails, including setting up a new project and creating a GraphQL endpoint.\n* Ruby on Rails is an MVC framework that allows for building web applications using the Ruby programming language, while GraphQL is a declarative query language that makes it easier for frontend developers to perform data fetching.\n* The article guides the reader through setting up a new Rails project, creating models, adding pre-generated data, and creating a GraphQL Rails endpoint.\n* The reader is also shown how to write their first query using GraphQL, including adding the graphql-ruby gem and generating the necessary files.\n* The article provides a step-by-step guide on how to build and query a Rails-GraphQL API, making it easier for developers to get started with using GraphQL with Ruby on Rails."
+  },
+  {
+    "url": "https://medium.com/simform-engineering/using-graphql-with-rails-7-building-efficient-apis-76006c14b8de",
+    "title": "Using GraphQL with Rails 7: Building Efficient APIs",
+    "main_claim": "GraphQL is a modern, open-source query language for your API, providing a more efficient, powerful, and flexible alternative to traditional REST APIs.",
+    "credibility_score": 8,
+    "summary": "* The article discusses how to use GraphQL with Rails 7 to build efficient APIs, highlighting the benefits of GraphQL over traditional REST APIs, such as reducing under-fetching and over-fetching. * To get started with GraphQL in Rails 7, you need to set up a new Rails API project, prepare the data model, and add the graphql-ruby gem to your project, which generates the necessary files for a minimal GraphQL setup. * The article explains how to create a GraphQL endpoint, add a GraphQL schema, and define types and fields for your data model, using the graphql-ruby gem's generator to create a basic blog type that can be customized. * The article also covers how to write GraphQL queries, including how to fetch blog posts and users, and how to use arguments in queries to retrieve specific data, such as a blog post by ID. * The article provides examples of how to execute GraphQL queries using the GraphiQL IDE, which is mounted in the Ruby on Rails application for easy query testing, and how to handle errors and exceptions in the GraphQL controller."
+  },
+  {
+    "url": "https://www.honeybadger.io/blog/graphql-apis-for-rails/",
+    "title": "GraphQL APIs in Rails",
+    "main_claim": "GraphQL is a flexible and efficient alternative to traditional REST APIs.",
+    "credibility_score": 8,
+    "summary": "The article discusses REST and GraphQL APIs, their advantages and disadvantages, and provides a step-by-step guide on creating a GraphQL API with Ruby on Rails."
+  },
+  {
+    "url": "https://github.com/rmosolgo/graphql-ruby",
+    "title": "N/A",
+    "main_claim": "N/A",
+    "credibility_score": 0,
+    "summary": "Here is the summary of the provided web page content in the requested JSON format:\n\n```\n{\n  \"summary\": [\n    * The Ruby implementation of GraphQL can be installed from RubyGems by adding it to the Gemfile and then bundling.\n    * The installation process involves running the command \"rails generate graphql:install\" and possibly running \"bundle install\" again.\n    * GraphQL::Pro is available, which provides additional features such as persisted queries, API versioning, and server-side caching.\n    * The GraphQL implementation aims to provide an idiomatic, plain-Ruby API with similarities to the reference implementation.\n    * Support and resources are available, including a Discord channel, GitHub issues, and a development guide.\n  ],\n  \"title\": \"GraphQL Ruby Implementation\",\n  \"main_claim\": \"A Ruby implementation of GraphQL that provides a simple and idiomatic API\",\n  \"credibility_score\": 8\n}\n```\n\nNote: The credibility score is subjective and based on the content provided. A score of 8 indicates that the content appears to be well-structured, informative, and from a reputable source, but may lack some external validation or reviews."
+  },
+  {
+    "url": "https://oneuptime.com/blog/post/2026-01-26-rails-graphql-ruby/view",
+    "summary": "Could not extract content from this page."
+  }
+]
