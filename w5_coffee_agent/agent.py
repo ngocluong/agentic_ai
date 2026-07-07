@@ -22,6 +22,15 @@ def top_n_item(n: int) -> str:
     return df.groupby('coffee_name').size().nlargest(n).to_json()
 
 @tool
+def save_report(history: list, file_name: str = "report.txt") -> str:
+    """Save the session query history to file_name."""
+    with open(file_name, "w") as f:
+        for i, entry in enumerate(history, 1):
+            f.write(f"Q{i}: {entry['query']}\n")
+            f.write(f"Result: {entry['result']}\n\n")
+    return f"Report saved with {len(history)} entries."
+            
+@tool
 def load_csv(filepath: str) -> str:
     """Load a CSV file into the dataframe. Returns column names and row count."""
     global df

@@ -52,7 +52,7 @@ def ai_answer(question):
     ids=f'{user_name}_{uuid.uuid4()}'
   )
   
-  return answer    
+  return answer
 
 user_name = input("Before we start, what is your name? ")
 

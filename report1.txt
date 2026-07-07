@@ -1,0 +1,15 @@
+Q1: What's the average price?
+Result: {"price":{"count":3636.0,"mean":3.1746859186,"std":0.4919925804,"min":1.812,"25%":2.792,"50%":3.282,"75%":3.576,"max":4.0}}
+
+Q2: Show top 3 products          
+Result: {"Americano with Milk":824,"Latte":782,"Americano":578}
+
+Q3: Filter by Latte 
+Result: []
+
+Q4: Plot a bar chart        
+Result: Chart saved as chart.png showing revenue by coffee_name
+
+Q5: Save analysis to report.txt 
+Result: Report saved with 4 entries.
+

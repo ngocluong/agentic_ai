@@ -1,0 +1,12 @@
+Q1: Load data/coffee_sales.csv
+Result: Loaded 3636 rows with columns: ['date', 'time', 'cash_type', 'card', 'price', 'coffee_name']
+
+Q2: Filter by Latte
+Result: [{"date":"2024-03-01","time":"06:14","cash_type":"card","card":"ANON-0000-0000-0001","price":3.87,"coffee_name":"Latte"},{"date":"2024-03-01","time":"12:56","cash_type":"card","card":"ANON-0000-0000-0004","price":3.87,"coffee_name":"Latte"},{"date":"2024-03-02","time":"08:52","cash_type":"cash","card":null,"price":4.0,"coffee_name":"Latte"},{"date":"2024-03-03","time":"07:00","cash_type":"cash","card":null,"price":4.0,"coffee_name":"Latte"},{"date":"2024-03-03","time":"07:21","cash_type":"card","card":"ANON-0000-0000-0015","price":3.87,"coffee_name":"Latte"}]
+
+Q3: Show top 3 by revenue
+Result: {"Latte":2786.63,"Americano with Milk":2526.912,"Cappuccino":1803.414}
+
+Q4: Plot a bar chart
+Result: Chart saved as chart.png showing revenue by coffee_name
+

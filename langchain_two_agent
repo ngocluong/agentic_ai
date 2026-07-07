@@ -42,6 +42,9 @@ while True:
   planner = planner_chain.invoke({"input": sentence})
   responses = []
   steps = [line.strip() for line in planner.strip().split('\n') if line.strip()]
+  # full_chain = planner_chain | (lambda x: {"input": x}) | executor_chain
+  # result = full_chain.invoke({"input": sentence})
+
   print(steps) 
   for step in steps:
     print(f"\n=== Executing: {step} ===")
