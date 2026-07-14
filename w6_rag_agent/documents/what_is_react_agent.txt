@@ -1,0 +1,17 @@
+What is a ReAct Agent
+
+A ReAct agent is an LLM-powered agent that follows the Reasoning and Acting pattern. Instead of answering in one shot, the agent alternates between thinking about what to do and taking an action, then observing the result before deciding the next step. ReAct stands for Reasoning and Acting.
+
+The ReAct loop:
+The agent runs in a loop with three steps. The Think step is where the LLM reasons about the question and decides which tool to call. The Act step is where the agent calls the chosen tool with specific arguments. The Observe step is where the agent reads the tool result and decides whether to call another tool or return a final answer. The loop continues until the agent produces a final answer or reaches the maximum number of steps.
+
+Tools in a ReAct agent:
+Tools are Python functions that the agent can call. In LangChain, a tool is created by decorating a Python function with the @tool decorator. The function's docstring becomes the tool description — the LLM reads the description to decide when to use the tool. Tool inputs and outputs must be serializable since they pass through the LLM context window.
+
+The max_steps guard:
+A ReAct agent can loop indefinitely if the LLM never produces a final answer. The max_steps parameter sets a hard limit on the number of think-act-observe cycles. When max_steps is reached, the agent stops and returns whatever it has so far. A typical value is 5 to 10 steps depending on task complexity.
+
+Hand-built vs LangChain ReAct:
+A hand-built ReAct agent (Day 13 of this study roadmap) manually parses LLM output to extract the tool name and arguments using string matching. LangChain's create_react_agent (Day 21) handles the parsing automatically using structured tool calling — the LLM returns tool calls as JSON rather than free text, which is more reliable and less error-prone.
+
+ReAct agents are most useful for tasks that require multiple steps, real-time data lookup, math calculations, or any situation where the LLM needs to interact with external systems before producing a final answer.

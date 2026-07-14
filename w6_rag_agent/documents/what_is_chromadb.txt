@@ -1,0 +1,20 @@
+What is ChromaDB
+
+ChromaDB is an open-source vector database designed for storing and retrieving text embeddings. It is the most common choice for local RAG applications because it runs entirely on your machine with no external services required.
+
+How ChromaDB stores data:
+ChromaDB organizes data into collections. Each collection stores documents alongside their vector embeddings and optional metadata. When you add a document, ChromaDB converts it to a vector using an embedding model and stores both the original text and the vector. The default embedding model is sentence-transformers/all-MiniLM-L6-v2 which runs locally.
+
+Two storage modes:
+PersistentClient saves data to disk at a specified path and survives script restarts. EphemeralClient keeps data only in memory and is lost when the process ends. For RAG applications that should remember documents across sessions, PersistentClient is required. The path parameter specifies the folder where ChromaDB writes its files.
+
+Querying ChromaDB:
+The query method takes a list of query texts and returns the most similar documents. The n_results parameter controls how many documents are returned. ChromaDB returns distances alongside documents — lower distance means higher similarity. The default distance metric is cosine distance. A distance below 0.5 indicates high similarity, above 1.2 indicates poor match.
+
+Metadata filtering:
+Each document can be stored with a metadata dictionary. The where parameter in a query filters results to only documents matching specific metadata values. This is essential for multi-user applications where each user's data must be isolated from others. For example, where equals user_id filters results to only that user's documents.
+
+Common pitfalls:
+ChromaDB will not re-index documents automatically when you change chunk settings. You must delete the collection and re-index from scratch. Using the same collection name across different projects will mix unrelated documents and degrade retrieval quality. Always check collection.count() before deciding whether to index.
+
+ChromaDB is most useful for local development, prototyping RAG applications, and applications where data privacy requires keeping embeddings on-premises rather than sending them to a cloud service.

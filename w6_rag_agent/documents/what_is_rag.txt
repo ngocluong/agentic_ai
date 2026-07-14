@@ -1,0 +1,17 @@
+What is RAG (Retrieval-Augmented Generation)
+
+RAG is a technique that improves LLM answers by retrieving relevant documents before generating a response. Instead of relying solely on the LLM's training data, RAG fetches specific context from a knowledge base and injects it into the prompt.
+
+How RAG works:
+RAG has two separate phases. The indexing phase happens once — documents are split into chunks, each chunk is converted into a vector embedding using an embedding model, and the embeddings are stored in a vector database like ChromaDB. The query phase happens on every question — the user's question is embedded using the same model, the vector database finds the most similar chunks using cosine similarity, and those chunks are injected into the LLM prompt as context.
+
+Why RAG beats plain prompting:
+LLMs hallucinate when asked about specific facts they were not trained on. RAG grounds the answer in real documents, reducing hallucination. It also allows you to update the knowledge base without retraining the model — just re-index the documents.
+
+Key parameters that affect RAG quality:
+chunk_size controls how large each text piece is. Larger chunks give more context per retrieval but may include irrelevant text. chunk_overlap ensures that sentences at chunk boundaries are not lost — a typical value is 10-20% of chunk_size. n_results controls how many chunks are retrieved — more chunks give the LLM more context but increase token usage and cost.
+
+Common RAG failure modes:
+Retrieval fails when the question uses different vocabulary than the document. The LLM hallucinates when retrieved chunks are relevant but incomplete. Citations are wrong when chunk boundaries split a single concept across two chunks.
+
+RAG is most useful for question answering over private documents, customer support bots, and any application where the LLM needs access to knowledge that changes frequently or was not in its training data.

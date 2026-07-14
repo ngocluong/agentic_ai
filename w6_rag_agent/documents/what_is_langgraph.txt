@@ -1,0 +1,17 @@
+What is LangGraph
+
+LangGraph is a library built on top of LangChain for building stateful, multi-step agents as graphs. Instead of writing a linear chain of LLM calls, LangGraph lets you define nodes and edges that form a directed graph where each node is a processing step and edges control the flow between steps.
+
+Core concepts:
+A node is a Python function that takes the current state and returns an updated state. Nodes contain the logic — calling an LLM, running a tool, making a decision. An edge connects two nodes and tells LangGraph which node to run next. A conditional edge checks the current state and routes to different nodes depending on the result — for example, routing to a tool node if the LLM requested a tool call, or to the end if the answer is ready. State is a TypedDict that holds all data shared between nodes — messages, intermediate results, and any other values needed across steps.
+
+State management:
+Every node receives the full state and returns a dictionary of updates. LangGraph merges the updates into the existing state automatically. The state acts as the agent's memory during a single run — all nodes can read and write to it. The most common state pattern is to include a messages key that accumulates the conversation history across nodes.
+
+Checkpointing:
+LangGraph supports checkpointing through MemorySaver. A checkpoint saves the complete state after each node runs. This allows the agent to resume from where it left off if interrupted. Checkpointing also enables multi-turn conversations where the agent remembers previous turns across separate invocations. To enable checkpointing, pass a MemorySaver instance as the checkpointer parameter when compiling the graph.
+
+Difference from raw LangChain:
+A raw LangChain chain runs linearly from start to finish with no branching. LangGraph supports cycles, branches, and conditional routing — essential for agents that need to loop, backtrack, or take different paths based on intermediate results. LangGraph is the recommended approach for any agent more complex than a single LLM call with tools.
+
+LangGraph is most useful for building agents that require loops, multi-agent coordination, human-in-the-loop approval steps, or persistent state across multiple conversation turns.

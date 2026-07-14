@@ -1,0 +1,17 @@
+What is LangChain
+
+LangChain is a Python framework for building applications powered by large language models. It provides abstractions that make it easier to connect LLMs to tools, memory, data sources, and other LLMs without writing low-level API code.
+
+Core building blocks:
+A PromptTemplate is a reusable prompt with variable placeholders using curly brace syntax. It separates the structure of a prompt from the data inserted into it, making prompts reusable across different agents and chains. An LLM wrapper like ChatGroq or ChatOpenAI wraps the raw API call and makes the model compatible with LangChain's chain syntax. An OutputParser transforms the raw LLM response into a structured format — StrOutputParser returns a plain string, JsonOutputParser returns a Python dictionary.
+
+The pipe operator:
+LangChain uses the pipe operator to connect components into a chain. The output of one component becomes the input of the next. A typical chain looks like: prompt | llm | output_parser. This is called LCEL — LangChain Expression Language. The chain is lazy — it does not execute until invoke is called.
+
+Agents in LangChain:
+A LangChain agent is a loop where the LLM decides which tool to call based on the user's question. Tools are Python functions decorated with the @tool decorator. The agent sees the tool descriptions and picks the right one. LangChain provides create_react_agent which implements the ReAct pattern — Reasoning and Acting — where the LLM alternates between thinking and calling tools.
+
+Memory in LangChain:
+LangChain supports short-term memory through the conversation history passed in the messages list. Long-term memory requires an external store like ChromaDB. The memory is retrieved before each LLM call and injected into the system prompt as context.
+
+LangChain is most useful when you need to chain multiple LLM calls, connect an LLM to tools or databases, or build agents that can take actions based on LLM reasoning.

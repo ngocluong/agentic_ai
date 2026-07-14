@@ -1,5 +1,5 @@
 """
-plot_eval.py — reads eval_history.csv and produces eval_trend.png
+plot_eval.py — reads eval_history_w6.csv and produces eval_trend.png
 showing avg score over time + quality threshold + weakest question analysis.
 """
 import csv
@@ -11,63 +11,63 @@ import matplotlib.dates as mdates
 from datetime import datetime
 from collections import defaultdict
 
-HISTORY_FILE = "eval_history.csv"
-OUTPUT_FILE  = "eval_trend.png"
+HISTORY_FILE = "w6_rag_agent/eval_history_w6.csv"
+OUTPUT_FILE  = "w6_rag_agent/eval_trend.png"
 THRESHOLD    = 4.0
 
 QUESTION_LABELS = {
-    "q1":  "short-term-mem: what it does",
-    "q2":  "long-term-mem: storage location",
-    "q3":  "short-term-mem: on exit",
-    "q4":  "langchain_translation: purpose",
-    "q5":  "langchain_translation: pipe operator",
-    "q6":  "langchain_two_agent: agents",
-    "q7":  "mini_project: search tool",
-    "q8":  "mini_project: ChromaDB",
-    "q9":  "mini_project: output formats",
-    "q10": "long-term-mem: key takeaway",
+    "q1":  "RAG: two phases",
+    "q2":  "RAG: reduces hallucination",
+    "q3":  "LangChain: StrOutputParser vs JsonOutputParser",
+    "q4":  "LangChain: LCEL and chain execution",
+    "q5":  "ChromaDB: PersistentClient vs EphemeralClient",
+    "q6":  "ChromaDB: distance above 1.2",
+    "q7":  "ReAct: three steps in loop",
+    "q8":  "ReAct: max_steps purpose",
+    "q9":  "LangGraph: node vs edge",
+    "q10": "LangGraph: MemorySaver",
 }
 
 CATEGORIES = {
-    "short-term-mem":        ["q1", "q3"],
-    "long-term-mem":         ["q2", "q10"],
-    "langchain_translation": ["q4", "q5"],
-    "langchain_two_agent":   ["q6"],
-    "mini_project":          ["q7", "q8", "q9"],
+    "RAG":        ["q1", "q2"],
+    "LangChain":  ["q3", "q4"],
+    "ChromaDB":   ["q5", "q6"],
+    "ReAct":      ["q7", "q8"],
+    "LangGraph":  ["q9", "q10"],
 }
 
 
 def load_history(filepath: str) -> list[dict]:
-    rows = []
-    with open(filepath, newline="") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            row["date"] = datetime.strptime(row["date"], "%Y-%m-%d")
-            row["overall_score"] = float(row["overall_score"])
-            row["passed"] = int(row["passed"])
-            for q in QUESTION_LABELS:
-                if q in row:
-                    row[q] = int(row[q])
-            rows.append(row)
-    return rows
+  rows = []
+  with open(filepath, newline="") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+      row["date"] = datetime.strptime(row["date"], "%Y-%m-%d")
+      row["overall_score"] = float(row["overall_score"])
+      row["passed"] = int(row["passed"])
+      for q in QUESTION_LABELS:
+        if q in row:
+          row[q] = int(row[q])
+      rows.append(row)
+  return rows
 
 
 def avg_per_question(rows: list[dict]) -> dict:
-    totals = defaultdict(list)
-    for row in rows:
-        for q in QUESTION_LABELS:
-            if q in row:
-                totals[q].append(row[q])
-    return {q: sum(vals) / len(vals) for q, vals in totals.items() if vals}
+  totals = defaultdict(list)
+  for row in rows:
+    for q in QUESTION_LABELS:
+      if q in row:
+        totals[q].append(row[q])
+  return {q: sum(vals) / len(vals) for q, vals in totals.items() if vals}
 
 
 def avg_per_category(q_avgs: dict) -> dict:
-    result = {}
-    for cat, questions in CATEGORIES.items():
-        vals = [q_avgs[q] for q in questions if q in q_avgs]
-        if vals:
-            result[cat] = sum(vals) / len(vals)
-    return result
+  result = {}
+  for cat, questions in CATEGORIES.items():
+    vals = [q_avgs[q] for q in questions if q in q_avgs]
+    if vals:
+      result[cat] = sum(vals) / len(vals)
+  return result
 
 
 def plot(rows: list[dict], q_avgs: dict, cat_avgs: dict):
@@ -146,15 +146,15 @@ def print_analysis(q_avgs: dict, cat_avgs: dict):
 
 
 if __name__ == "__main__":
-    if not os.path.isfile(HISTORY_FILE):
-        print(f"'{HISTORY_FILE}' not found. Run rag_pdf_tunning.py first.")
-        exit(1)
+  if not os.path.isfile(HISTORY_FILE):
+    print(f"'{HISTORY_FILE}' not found. Run evaluator.py first.")
+    exit(1)
 
-    rows = load_history(HISTORY_FILE)
-    print(f"Loaded {len(rows)} eval runs from {HISTORY_FILE}")
+  rows = load_history(HISTORY_FILE)
+  print(f"Loaded {len(rows)} eval runs from {HISTORY_FILE}")
 
-    q_avgs   = avg_per_question(rows)
-    cat_avgs = avg_per_category(q_avgs)
+  q_avgs   = avg_per_question(rows)
+  cat_avgs = avg_per_category(q_avgs)
 
-    plot(rows, q_avgs, cat_avgs)
-    print_analysis(q_avgs, cat_avgs)
+  plot(rows, q_avgs, cat_avgs)
+  print_analysis(q_avgs, cat_avgs)

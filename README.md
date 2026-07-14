@@ -25,9 +25,11 @@ All models use **Llama 3.3 70B** via [Groq](https://console.groq.com) (`llama-3.
 
 | File | What it shows |
 |---|---|
-| `ai_business_agent.py` | Tool registry + agentic loop over in-memory sales data |
+| `ai_businness_agent.py` | Tool registry + agentic loop over in-memory sales data |
 | `agent.py` | Rule-based router over e-commerce CSV |
 | `mini_project_agent.py` | End-to-end mini agent project |
+| `mini_project_w3.py` | Research agent: web search + ChromaDB semantic cache + report generation |
+| `langchain_two_agent` | Planner/executor multi-agent pattern (plan → execute → summarise) |
 | `chain_of_thought.py` | Chain-of-thought prompting experiments |
 | `short-term-mem.py` | Conversation memory within a session |
 | `long-term-mem.py` | Persistent memory across sessions (Chroma vector store) |
@@ -37,7 +39,9 @@ All models use **Llama 3.3 70B** via [Groq](https://console.groq.com) (`llama-3.
 | `langchain_reflection.py` | Reflection pattern via LangChain |
 | `langchain_translation.py` | LangChain translation chain |
 
-### Tool Registry Pattern (`ai_business_agent.py`)
+See [`week_3_README.md`](week_3_README.md) for a day-by-day writeup of the memory and multi-agent experiments above.
+
+### Tool Registry Pattern (`ai_businness_agent.py`)
 
 Single source of truth — function, description, and JSON Schema live in one dict entry:
 
@@ -109,6 +113,7 @@ Other week-4 scripts:
 | `w4_playwright_beautifulsoup.py` | Playwright + BeautifulSoup hybrid |
 | `w4_trafilatura_llm.py` | Trafilatura extraction piped to LLM |
 | `w4_trafilatura_llm_ranking.py` | Adds LLM-based ranking of results |
+| `llm_web_data_analysis.py` | Playwright + BeautifulSoup search-and-read pipeline, summarises top 3 results into a structured JSON report |
 
 ---
 
@@ -157,3 +162,63 @@ Entity key names from the LLM are unpredictable (`"column"`, `"column_name"`, `"
 | `nlp.py` | ToolRegistry + LLM intent extraction + query handler |
 | `analyst.py` | Higher-level analyst wrapper |
 | `data/coffee_sales.csv` | Dataset |
+
+---
+
+## Week 5 — Classifier Router Agent (`w5/`)
+
+A separate, simpler router: classifies a free-text query into one of four categories, then extracts structured arguments for that category's tool. Two LLM calls per query (classify → extract args) instead of one.
+
+```bash
+python -m w5.router
+```
+
+```
+user query → classify_query()        ← LLM returns category name
+                  ↓
+        get_input_for_tool()          ← LLM extracts JSON args for that category
+                  ↓
+        registry.call(category, args) ← ToolRegistry dispatch
+```
+
+| File | Role |
+|---|---|
+| `registry.py` | `ToolRegistry` — maps category name → callable |
+| `tools.py` | Calculation, date formatting, text formatting, CSV reading tools |
+| `router.py` | `classify_query()` + `get_input_for_tool()` + `routing_agent()` |
+
+**Key learning:** the two-step classify-then-extract pipeline is more accurate than a single-shot call but doubles latency/cost per query — worth it only when misrouting is expensive.
+
+---
+
+## RAG Evaluation Pipeline (`rag_pdf.py`, `rag_pdf_eval.py`, `rag_pdf_tunning.py`, `plot_eval.py`)
+
+A retrieval-augmented Q&A agent over `week_3_README.md`, plus an LLM-as-judge evaluation harness used to iteratively tune chunking and retrieval parameters.
+
+```bash
+python rag_pdf.py          # ask a one-off question
+python rag_pdf_tunning.py  # run the 10-question eval suite, append to eval_history.csv
+python plot_eval.py        # render eval_trend.png from eval_history.csv
+```
+
+```
+question → ChromaDB similarity search → top-k chunks → LLM answer (cites chunk #)
+                                                              ↓
+                                          LLM-as-judge scores answer 1-5 vs expected
+                                                              ↓
+                                          save_to_history() → eval_history.csv
+                                                              ↓
+                                          plot_eval.py → eval_trend.png (score over time + weakest category)
+```
+
+| File | Role |
+|---|---|
+| `rag_pdf.py` | `ai_answer()` — chunks `week_3_README.md` into Chroma, retrieves top-7, answers with citation + low-confidence fallback (`min_distance > 1.2` → "no relevant context") |
+| `rag_pdf_eval.py` | First-pass eval: 10 fixed Q&A test cases scored by an LLM judge; includes before/after notes from tuning `chunk_overlap` and `n_results` |
+| `rag_pdf_tunning.py` | Tuned version of the eval loop — appends each run's scores to `eval_history.csv` for trend tracking |
+| `plot_eval.py` | Reads `eval_history.csv`, plots avg score over time + per-category breakdown to `eval_trend.png` |
+
+**Key learnings:**
+- Citation accuracy depends on chunk quality as much as retrieval quality — bad chunk boundaries (500 chars, cutting mid-concept) produce confusing citations even with correct retrieval.
+- Small parameter changes compound: raising `chunk_overlap` 50→150 and `n_results` 3→5 took the eval from 8/10 to 10/10 passed.
+- A low-confidence guard (`min_distance` threshold) stops the LLM from confidently answering off irrelevant chunks.
