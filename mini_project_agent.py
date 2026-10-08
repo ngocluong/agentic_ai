@@ -12,7 +12,7 @@ client = TavilyClient(os.getenv("TAVILY_API_KEY"))
 # runs locally, saves to disk in ./chroma folder
 chroma_client = chromadb.PersistentClient(path="./chroma")
 collection = chroma_client.get_or_create_collection(name="research_collection")
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 def chroma_search(question):
   chromaresults = collection.query(

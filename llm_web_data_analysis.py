@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import json
 
 load_dotenv()
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 def analysis_web(query: str):
   summaries = research_and_summarize(query)

@@ -31,11 +31,23 @@ def save_report(history: list, file_name: str = "report.txt") -> str:
     return f"Report saved with {len(history)} entries."
             
 @tool
-def load_csv(filepath: str) -> str:
-    """Load a CSV file into the dataframe. Returns column names and row count."""
+def load_csv(filepath: str = "") -> str:
+    """Load a CSV file into the dataframe. Returns column names and row count.
+    If filepath is omitted or cannot be found, loads the default coffee sales dataset."""
     global df
-    df = pd.read_csv(filepath)
-    return f"Loaded {len(df)} rows with columns: {list(df.columns)}"
+    candidates = []
+    if filepath:
+        candidates.append(filepath)
+        candidates.append(os.path.join(os.path.dirname(_data_path), filepath))
+    candidates.append(_data_path)
+
+    for path in candidates:
+        if os.path.isfile(path):
+            df = pd.read_csv(path)
+            note = f" (requested '{filepath}' not found, loaded default dataset instead)" if filepath and path == _data_path else ""
+            return f"Loaded {len(df)} rows with columns: {list(df.columns)}{note}"
+
+    return f"Could not find '{filepath}' or the default dataset."
 
 @tool
 def describe_data(column: str = "") -> str:

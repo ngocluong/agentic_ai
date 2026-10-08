@@ -10,7 +10,7 @@ HISTORY_FILE = "w6_rag_agent/eval_history_w6.csv"
 headers = ["date","overall_score","passed","q1","q2","q3","q4","q5","q6","q7","q8","q9","q10"]
 
 llm = ChatGroq(
-  model="llama-3.3-70b-versatile",
+  model="openai/gpt-oss-120b",
   temperature=0,
   model_kwargs={"response_format": {"type": "json_object"}}
 )

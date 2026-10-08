@@ -5,12 +5,11 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langchain_core.runnables import RunnableConfig
 from langgraph.graph.message import add_messages
 from langchain_groq import ChatGroq
-from dotenv import load_dotenv
 from typing import Literal
 from uuid import uuid4
+from w7_agent.config import settings
 
-load_dotenv()  # Load environment variables from .env file
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model=settings.llm_model, temperature=settings.temperature)
 
 class AgentState(TypedDict):
   messages: Annotated[list, add_messages]
@@ -122,24 +121,19 @@ agent = agent_builder.compile(checkpointer=checkpointer)
 # instead of starting a brand new, disconnected thread.
 user_threads: dict[str, str] = {}
 user_threads_seen: set[str] = set()  # ← add this
+def run():
+  while True:
+    name = input("Please enter your name to start the agent (or 'exit' to quit): ").strip()
+    if name.lower() in ("exit", "quit"):
+      break
+    
+    thread_id = user_threads.setdefault(name, str(uuid4()))
+    is_new_thread = thread_id not in user_threads_seen
+    user_threads_seen.add(thread_id)
+    initial_state = {"messages": [], "is_question": False, "user_name": name} if is_new_thread else {}
+    config: RunnableConfig = {"configurable": {"thread_id": thread_id}}
 
-while True:
-  name = input("Please enter your name to start the agent (or 'exit' to quit): ").strip()
-  if name.lower() in ("exit", "quit"):
-    break
-  
-  thread_id = user_threads.setdefault(name, str(uuid4()))
-  is_new_thread = thread_id not in user_threads_seen
-  user_threads_seen.add(thread_id)
-  initial_state = {"messages": [], "is_question": False, "user_name": name} if is_new_thread else {}
-  config: RunnableConfig = {"configurable": {"thread_id": thread_id}}
-
-  result = agent.invoke(initial_state, config=config)
-  print(result["messages"][-1].content)
+    result = agent.invoke(initial_state, config=config)
+    print(result["messages"][-1].content)
   
   
-#   # Compile the agent
-# agent = agent_builder.compile()
-
-# result = agent.invoke({"messages": [], "is_question": False})
-# print(result["messages"][-1].content)

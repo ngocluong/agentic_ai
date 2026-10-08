@@ -17,7 +17,7 @@ GROQ_API_KEY=your_groq_key
 OPENAI_API_KEY=your_openai_key
 ```
 
-All models use **Llama 3.3 70B** via [Groq](https://console.groq.com) (`llama-3.3-70b-versatile`) unless noted.
+All models use **Llama 3.3 70B** via [Groq](https://console.groq.com) (`openai/gpt-oss-120b`) unless noted.
 
 ---
 

@@ -1,15 +1,17 @@
-from openai import OpenAI
+from openai import OpenAI, RateLimitError, AuthenticationError, APITimeoutError, APIError
 import os
 import json
 from prompt_toolkit import prompt
 import time
 from dotenv import load_dotenv
+import json
 
 load_dotenv()  # Load environment variables from .env file
 
 client = OpenAI(
     api_key=os.getenv("GROQ_API_KEY"),
     base_url="https://api.groq.com/openai/v1",
+    timeout=10.0,
 )
 
 sales_data = [
@@ -220,7 +222,7 @@ def chart_agent(question, output_file="chart1.png"):
     ]
 
     response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=messages,
         tools=TOOLS,
         tool_choice="auto",
@@ -238,6 +240,7 @@ def chart_agent(question, output_file="chart1.png"):
 
 
 def agent(question):
+    begin = time.time()
     messages = [
         {
             "role": "system",
@@ -259,27 +262,57 @@ def agent(question):
     ]
 
     execution_trace = []
+    tools = []
     i = 0
 
     while i < MAX_ITERATIONS:
         i += 1
-
-        response = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            messages=messages,
-            tools=TOOLS,
-            tool_choice="auto",
-        )
+        try:
+            response = client.chat.completions.create(
+                model="openai/gpt-oss-120b",
+                messages=messages,
+                tools=TOOLS,
+                tool_choice="auto",
+            )
+        except RateLimitError:
+            return {
+                "error": True,
+                "error_message": "Too Many Requests",
+                "error_code": 429
+            }
+        except AuthenticationError: 
+            return {
+                "error": True,
+                "error_message": "Unauthorized",
+                "error_code": 401
+            }
+        except APITimeoutError: 
+            return {
+                "error": True,
+                "error_message": "Gateway Timeout",
+                "error_code": 504
+            }
+        except APIError:
+            return {
+                "error": True,
+                "error_message": "Internal Server Error",
+                "error_code": 500
+            }
+            
 
         message = response.choices[0].message
         messages.append(message)
 
         if not message.tool_calls:
-            return message.content
+            return {
+                "answer": message.content,
+                "time_ms": round((time.time() - begin) * 1000),  # ms
+                "tools_used": tools
+            }
 
         for tool_call in message.tool_calls:
             function_name = tool_call.function.name
-
+            tools.append(tool_call.function.name)
             try:
                 raw_args = tool_call.function.arguments
                 function_args = json.loads(raw_args) if raw_args else {}

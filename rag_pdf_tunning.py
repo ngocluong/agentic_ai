@@ -59,7 +59,7 @@ if collection.count() == 0:
 
 
 def ai_answer_val(question: str, expected: str):
-    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+    llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
     facts, answer = ai_answer(question)
 
     eval_prompt = PromptTemplate(

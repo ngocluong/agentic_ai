@@ -14,7 +14,7 @@ revenue_by_segment = tool(revenue_by_segment)
 tools = [revenue_by_country, revenue_by_country_name, revenue_by_segment]
 load_dotenv()  # Load environment variables from .env file
 
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 planner_prompt = PromptTemplate(
     template="""break down the goal into a list of concise steps.

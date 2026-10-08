@@ -74,7 +74,7 @@ if collection.count() == 0:
 
 
 def ai_answer(question: str) -> str:
-    llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+    llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
     question = llm.invoke(f"Rephase the question in a concise way: {question}").content
     results = collection.query(query_texts=[question], n_results=5)
     print("=====DEBUG LOG=====")

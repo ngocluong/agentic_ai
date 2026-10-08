@@ -12,7 +12,7 @@ registry.register("text", format_text)
 registry.register("csv", read_csv)
 
 load_dotenv()    
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model="openai/gpt-oss-120b", temperature=0)
 
 def classify_query(query: str) -> str:
     response = llm.invoke(f"""Classify this query into exactly one category.

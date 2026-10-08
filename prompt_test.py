@@ -36,10 +36,10 @@ def parse_json_response(response):
         print(response)
         return None
     
-question = input("Ask: ")
-prompt = build_prompt(question, options={"role": "senior data analyst"})
-answer = ask_ai(prompt, temperature=0)
-print(parse_json_response(answer))
+# question = input("Ask: ")
+# prompt = build_prompt(question, options={"role": "senior data analyst"})
+# answer = ask_ai(prompt, temperature=0)
+# print(parse_json_response(answer))
 
 
 # assignent: build ask_ai and build_prompt functions,

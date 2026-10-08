@@ -3,7 +3,7 @@ from langchain.agents import create_agent
 from w5_coffee_agent.agent import tools
 
 llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
+    model="openai/gpt-oss-120b",
     temperature=0,
 )
 

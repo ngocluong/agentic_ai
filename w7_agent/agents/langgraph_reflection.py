@@ -1,11 +1,10 @@
 from typing_extensions import TypedDict
 from langgraph.graph import StateGraph, START, END
 from langchain_groq import ChatGroq
-from dotenv import load_dotenv
 from typing import Literal
+from w7_agent.config import settings
 
-load_dotenv()  # Load environment variables from .env file
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0)
+llm = ChatGroq(model=settings.llm_model, temperature=settings.temperature, groq_api_key=settings.groq_api_key)
 
 class AgentState(TypedDict):
   draft: str
@@ -80,5 +79,6 @@ agent_builder.add_conditional_edges(
   ["revise_node", END]
 )
 agent = agent_builder.compile()
-topic = input("What topic would you like to ask? ")
-agent.invoke({"topic": topic, "draft": "", "critique": "", "iteration": 0, "final": "", "quality_score": 0})
+if __name__ == "__main__":
+  topic = input("What topic would you like to ask? ")
+  agent.invoke({"topic": topic, "draft": "", "critique": "", "iteration": 0, "final": "", "quality_score": 0})
